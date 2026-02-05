@@ -1,12 +1,19 @@
 from flask import Flask, jsonify, request
 from binance.client import Client
 import pandas as pd
-import threading, time, smtplib, requests
+import threading, time, smtplib, requests, os
 from email.mime.text import MIMEText
 
 
 app = Flask(__name__)
-client = Client()
+
+EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_RECEIVER = os.environ.get("EMAIL_RECEIVER")
+
+client = Client(os.environ.get("BINANCE_API_KEY"))
+ENABLE_LOCAL_THREADS = os.environ.get("ENABLE_LOCAL_THREADS", "false").lower() == "true"
+
 
 # -----------------------------
 #   CONFIG EMAIL
@@ -122,7 +129,7 @@ def ping():
 def auto_ping():
     while True:
         try:
-            requests.get("https://sender-mail.onrender.com/ping")
+            requests.get("http://127.0.0.1:5000/ping")
         except Exception as e:
             print("Erreur auto-ping:", e)
         time.sleep(300)  # 300 secondes = 5 minutes
@@ -130,7 +137,7 @@ def auto_ping():
 def auto_analyze():
     while True:
         try:
-            requests.get("https://sender-mail.onrender.com/analyze?symbol=BTCUSD&interval=15m")
+            requests.get("http://127.0.0.1:5000/analyze?symbol=BTCUSD&interval=15m")
         except Exception as e:
             print("Erreur auto-analyze:", e)
         time.sleep(60)  # analyse toutes les 60 secondes
@@ -140,10 +147,12 @@ def auto_analyze():
 # -----------------------------
 
 if __name__ == "__main__":
-    threading.Thread(target=auto_ping, daemon=True).start()
-    threading.Thread(target=auto_analyze, daemon=True).start()
-    app.run(debug=True)
+    if ENABLE_LOCAL_THREADS:
+        threading.Thread(target=auto_ping, daemon=True).start()
+        threading.Thread(target=auto_analyze, daemon=True).start()
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
 
 # EXEMPLE DE REQUÊTE
 # http://127.0.0.1:5000/analyze
-# http://127.0.0.1:5000/analyze?symbol=BTCUSD&interval=5m
+# http://127.0.0.1:5000/analyze?symbol=BTCUSD&interval=5mimport os
+
