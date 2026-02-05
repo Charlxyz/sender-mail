@@ -3,4 +3,5 @@ python-binance==1.0.19
 pandas==2.2.0
 requests==2.31.0
 dateparser==1.2.0
+pandas>=2.2.3
 urllib3==2.2.0
