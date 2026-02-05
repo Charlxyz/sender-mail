@@ -11,7 +11,7 @@ EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 EMAIL_RECEIVER = os.environ.get("EMAIL_RECEIVER")
 
-client = Client(os.environ.get("BINANCE_API_KEY"))
+client = Client()
 ENABLE_LOCAL_THREADS = os.environ.get("ENABLE_LOCAL_THREADS", "false").lower() == "true"
 
 
