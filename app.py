@@ -1,19 +1,12 @@
 from flask import Flask, jsonify, request
 from binance.client import Client
 import pandas as pd
-import threading, time, smtplib, requests, os
+import threading, time, smtplib, requests
 from email.mime.text import MIMEText
 
 
 app = Flask(__name__)
-
-EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
-EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
-EMAIL_RECEIVER = os.environ.get("EMAIL_RECEIVER")
-
 client = Client()
-ENABLE_LOCAL_THREADS = os.environ.get("ENABLE_LOCAL_THREADS", "false").lower() == "true"
-
 
 # -----------------------------
 #   CONFIG EMAIL
@@ -147,12 +140,10 @@ def auto_analyze():
 # -----------------------------
 
 if __name__ == "__main__":
-    if ENABLE_LOCAL_THREADS:
-        threading.Thread(target=auto_ping, daemon=True).start()
-        threading.Thread(target=auto_analyze, daemon=True).start()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
+    threading.Thread(target=auto_ping, daemon=True).start()
+    threading.Thread(target=auto_analyze, daemon=True).start()
+    app.run(debug=True)
 
 # EXEMPLE DE REQUÊTE
 # http://127.0.0.1:5000/analyze
-# http://127.0.0.1:5000/analyze?symbol=BTCUSD&interval=5mimport os
-
+# http://127.0.0.1:5000/analyze?symbol=BTCUSD&interval=5m
