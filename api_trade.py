@@ -118,7 +118,7 @@ def ping():
 def auto_ping():
     while True:
         try:
-            requests.get("http://127.0.0.1:5000/ping")
+            requests.get("/ping")
         except Exception as e:
             print("Erreur auto-ping:", e)
         time.sleep(300)  # 300 secondes = 5 minutes
