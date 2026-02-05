@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request
 from binance.client import Client
 import pandas as pd
-import requests
-import smtplib
+import threading, time, smtplib, requests
 from email.mime.text import MIMEText
+
 
 app = Flask(__name__)
 client = Client()
@@ -115,9 +115,22 @@ def api_analyze():
 def ping():
     return jsonify({"message": "pong"})
 
+def auto_ping():
+    while True:
+        try:
+            requests.get("http://127.0.0.1:5000/ping")
+        except Exception as e:
+            print("Erreur auto-ping:", e)
+        time.sleep(300)  # 300 secondes = 5 minutes
+
 # -----------------------------
 #   LANCEMENT
 # -----------------------------
 
 if __name__ == "__main__":
+    threading.Thread(target=auto_ping, daemon=True).start()
     app.run(debug=True)
+
+# EXEMPLE DE REQUÊTE
+# http://127.0.0.1:5000/analyze
+# http://127.0.0.1:5000/analyze?symbol=BTCUSD&interval=5m

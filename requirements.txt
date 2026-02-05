@@ -1,0 +1,6 @@
+flask==3.0.2
+python-binance==1.0.19
+pandas==2.2.0
+requests==2.31.0
+dateparser==1.2.0
+urllib3==2.2.0
